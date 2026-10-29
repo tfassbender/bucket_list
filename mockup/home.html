@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mockup – Startseite</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* ---- Design tokens ---------------------------------------------------- */
+    :root {
+      --bg: #0f1020;
+      --bg-elevated: #181a2e;
+      --bg-elevated-2: #212440;
+      --border: #2c3054;
+      --text: #f2f3ff;
+      --text-muted: #9a9cc4;
+      --text-faint: #6b6e99;
+
+      --c-coral: #ff6b6b;
+      --c-amber: #ffc94d;
+      --c-mint: #3ee0b0;
+      --c-sky: #4cc9f0;
+      --c-violet: #a78bfa;
+      --c-pink: #f472b6;
+      --c-lime: #a3e635;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+
+      --font-xs: 0.75rem;
+      --font-sm: 0.8125rem;
+      --font-md: 0.9375rem;
+      --font-lg: 1.125rem;
+      --font-xl: 1.625rem;
+    }
+
+    /* ---- Base ------------------------------------------------------------- */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(600px 300px at 100% -10%, color-mix(in srgb, var(--c-violet) 22%, transparent), transparent),
+        radial-gradient(500px 260px at -10% 20%, color-mix(in srgb, var(--c-pink) 14%, transparent), transparent),
+        var(--bg);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: var(--font-md);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-4) var(--space-6);
+    }
+
+    /* ---- Top bar ---------------------------------------------------------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+    }
+    .topbar__actions { display: flex; gap: var(--space-2); align-items: center; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 700;
+      font-size: var(--font-lg);
+      letter-spacing: 0.01em;
+    }
+    .brand i {
+      background: linear-gradient(135deg, var(--c-amber), var(--c-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 1.35rem;
+    }
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      display: grid;
+      place-items: center;
+    }
+
+    /* ---- Avatars ---------------------------------------------------------- */
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: var(--font-sm);
+      color: var(--bg);
+      border: 2px solid var(--bg);
+      flex: none;
+    }
+    .avatar--t { background: var(--c-sky); }
+    .avatar--e { background: var(--c-pink); }
+    .avatar--m { background: var(--c-amber); }
+    .avatar--j { background: var(--c-lime); }
+    .avatar--more { background: var(--bg-elevated-2); color: var(--text-muted); }
+    .avatar-stack { display: flex; }
+    .avatar-stack .avatar {
+      width: 26px;
+      height: 26px;
+      font-size: 0.6875rem;
+      border-color: var(--bg-elevated);
+    }
+    .avatar-stack .avatar + .avatar { margin-left: -9px; }
+
+    /* ---- Greeting --------------------------------------------------------- */
+    .greeting h1 {
+      margin: 0 0 var(--space-4);
+      font-size: var(--font-xl);
+      line-height: 1.2;
+    }
+
+    /* ---- Space switcher (<details>: bottom sheet on phones, dropdown on desktop) */
+    .switcher { position: relative; margin-bottom: var(--space-4); }
+    .switcher summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .switcher summary::-webkit-details-marker { display: none; }
+    .switcher[open] summary { border-color: var(--text-faint); }
+    .switcher__label { flex: 1; min-width: 0; }
+    .switcher__eyebrow {
+      display: block;
+      font-size: var(--font-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .switcher__name { font-weight: 700; font-size: var(--font-lg); }
+    .switcher__caret { color: var(--text-muted); transition: transform 0.15s; }
+    .switcher[open] .switcher__caret { transform: rotate(180deg); }
+
+    .switcher:not([open]) .switcher__backdrop { display: none; }
+    .switcher__backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      background: rgba(5, 6, 15, 0.6);
+    }
+    .switcher__panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: var(--space-2) var(--space-4) var(--space-5);
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
+    }
+    .switcher__grip {
+      width: 40px;
+      height: 4px;
+      margin: 0 auto var(--space-3);
+      border-radius: var(--radius-pill);
+      background: var(--border);
+    }
+    .switcher__title {
+      margin: 0 0 var(--space-2);
+      font-size: var(--font-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .spaces { list-style: none; margin: 0; padding: 0; }
+    .space {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .space:hover { background: var(--bg-elevated-2); }
+    /* fixed-width leading slot, so names line up whatever the avatar count */
+    .space > .avatar-stack,
+    .space > .space__icon { width: 64px; flex: none; }
+    .space > .space__icon { width: 36px; margin-right: 28px; }
+    .space.is-current { background: var(--bg-elevated-2); }
+    .space__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--bg-elevated-2);
+      color: var(--text-muted);
+      flex: none;
+    }
+    .space__body { flex: 1; min-width: 0; }
+    .space__name { font-weight: 600; }
+    .space__meta { display: block; font-size: var(--font-xs); color: var(--text-faint); }
+    .space__check { color: var(--c-mint); }
+    .switcher__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border);
+    }
+    .switcher__action {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      text-align: left;
+      font-weight: 600;
+    }
+    .switcher__action:hover { background: var(--bg-elevated-2); color: var(--text); }
+    .switcher__action i { width: 64px; flex: none; padding-left: 10px; text-align: left; }
+
+    /* ---- Progress --------------------------------------------------------- */
+    .progress-text { margin: 0; color: var(--text-muted); font-size: var(--font-sm); }
+    .progress-text strong { color: var(--c-mint); }
+    .overall {
+      margin: var(--space-2) 0 var(--space-5);
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-elevated-2);
+      overflow: hidden;
+    }
+    .overall span {
+      display: block;
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, var(--c-mint), var(--c-sky), var(--c-violet));
+      border-radius: inherit;
+    }
+
+    /* ---- Section heading -------------------------------------------------- */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: var(--font-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* ---- Lists (full-width rows) ------------------------------------------ */
+    .lists {
+      list-style: none;
+      margin: 0 0 var(--space-6);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .list-row {
+      --c: var(--c-sky);
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      text-decoration: none;
+      overflow: hidden;
+    }
+    .list-row:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); }
+    .list-row__icon {
+      flex: none;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      background: var(--c);
+      color: var(--bg);
+      font-size: 1.1rem;
+    }
+    .list-row__body { flex: 1; min-width: 0; }
+    .list-row__title { margin: 0; font-weight: 700; }
+    .list-row__desc {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: var(--font-sm);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .list-row__count {
+      flex: none;
+      font-size: var(--font-sm);
+      font-weight: 700;
+      color: var(--c);
+    }
+    .list-row__chevron { flex: none; color: var(--text-faint); font-size: var(--font-sm); }
+    /* thin progress line along the bottom edge */
+    .list-row__progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: var(--p);
+      background: var(--c);
+    }
+    .list-row--complete .list-row__count::after {
+      content: "\f00c";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      margin-left: var(--space-1);
+    }
+    .list-row--add {
+      justify-content: center;
+      background: transparent;
+      border: 1.5px dashed var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 100%;
+    }
+    .list-row--add:hover { color: var(--text); border-color: var(--text-faint); }
+
+    .c-coral  { --c: var(--c-coral); }
+    .c-amber  { --c: var(--c-amber); }
+    .c-mint   { --c: var(--c-mint); }
+    .c-sky    { --c: var(--c-sky); }
+    .c-violet { --c: var(--c-violet); }
+    .c-pink   { --c: var(--c-pink); }
+    .c-lime   { --c: var(--c-lime); }
+
+    /* ---- Recent activity -------------------------------------------------- */
+    .activity {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .activity li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+    }
+    .activity li + li { border-top: 1px solid var(--border); }
+    .activity .avatar { width: 28px; height: 28px; font-size: 0.6875rem; border-color: var(--bg-elevated); }
+    .activity p { margin: 0; flex: 1; font-size: var(--font-sm); }
+    .activity p b { font-weight: 600; }
+    .activity time { color: var(--text-faint); font-size: var(--font-sm); white-space: nowrap; }
+    .tag-done { color: var(--c-mint); }
+    .tag-new { color: var(--c-amber); }
+
+    /* ---- Desktop ---------------------------------------------------------- */
+    @media (min-width: 768px) {
+      .page { padding-top: var(--space-6); }
+      .greeting h1 { font-size: 2rem; }
+      .list-row { padding: var(--space-3) var(--space-4); }
+
+      /* the sheet becomes a dropdown under the switcher button */
+      .switcher__backdrop { background: transparent; }
+      .switcher__panel {
+        position: absolute;
+        top: calc(100% + var(--space-2));
+        bottom: auto;
+        left: 0;
+        right: 0;
+        max-height: none;
+        padding-top: var(--space-3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+      }
+      .switcher__grip { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Bucket List</div>
+      <div class="topbar__actions">
+        <button class="icon-button" aria-label="Suchen"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+        <div class="avatar avatar--t">T</div>
+      </div>
+    </header>
+
+    <section class="greeting">
+      <h1>Hallo Tobias!</h1>
+    </section>
+
+    <!-- Space switcher: a native <details>, so the mockup opens and closes without JavaScript. -->
+    <details class="switcher">
+      <summary>
+        <span class="avatar-stack"><span class="avatar avatar--t">T</span><span class="avatar avatar--e">E</span></span>
+        <span class="switcher__label">
+          <span class="switcher__eyebrow">Bereich</span>
+          <span class="switcher__name">Wir zwei</span>
+        </span>
+        <i class="fa-solid fa-chevron-down switcher__caret" aria-hidden="true"></i>
+        <!-- inside <summary>, so a click on the backdrop closes the switcher as well -->
+        <span class="switcher__backdrop" aria-hidden="true"></span>
+      </summary>
+
+      <div class="switcher__panel">
+        <div class="switcher__grip" aria-hidden="true"></div>
+        <p class="switcher__title">Bereich wechseln</p>
+        <ul class="spaces">
+          <li>
+            <a class="space is-current" href="#">
+              <span class="avatar-stack"><span class="avatar avatar--t">T</span><span class="avatar avatar--e">E</span></span>
+              <span class="space__body">
+                <span class="space__name">Wir zwei</span>
+                <span class="space__meta">2 Mitglieder · 7 Listen</span>
+              </span>
+              <i class="fa-solid fa-check space__check" aria-label="Aktueller Bereich"></i>
+            </a>
+          </li>
+          <li>
+            <a class="space" href="#">
+              <span class="space__icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+              <span class="space__body">
+                <span class="space__name">Persönlich</span>
+                <span class="space__meta">Nur für dich · 3 Listen</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="space" href="#">
+              <span class="avatar-stack"><span class="avatar avatar--t">T</span><span class="avatar avatar--m">M</span><span class="avatar avatar--more">+2</span></span>
+              <span class="space__body">
+                <span class="space__name">Familie</span>
+                <span class="space__meta">4 Mitglieder · 2 Listen</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="space" href="#">
+              <span class="avatar-stack"><span class="avatar avatar--j">J</span><span class="avatar avatar--e">E</span><span class="avatar avatar--more">+3</span></span>
+              <span class="space__body">
+                <span class="space__name">Roadtrip-Crew</span>
+                <span class="space__meta">5 Mitglieder · 1 Liste</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+        <div class="switcher__actions">
+          <button class="switcher__action"><i class="fa-solid fa-plus" aria-hidden="true"></i> Neuen Bereich erstellen</button>
+          <button class="switcher__action"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Mitglieder einladen</button>
+          <button class="switcher__action"><i class="fa-solid fa-gear" aria-hidden="true"></i> Bereichseinstellungen</button>
+        </div>
+      </div>
+    </details>
+
+    <p class="progress-text"><strong>21</strong> von 53 Träumen in diesem Bereich schon erlebt</p>
+    <div class="overall" aria-hidden="true"><span></span></div>
+
+    <div class="section-head">
+      <h2>Listen</h2>
+    </div>
+    <ul class="lists">
+      <li>
+        <a class="list-row c-sky" href="list.html" style="--p: 29%">
+          <span class="list-row__icon"><i class="fa-solid fa-plane" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Reisen</p>
+            <p class="list-row__desc">Orte, die wir unbedingt zusammen sehen wollen – am liebsten einen pro Jahr.</p>
+          </span>
+          <span class="list-row__count">2/7</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-coral" href="list.html" style="--p: 29%">
+          <span class="list-row__icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Abenteuer</p>
+            <p class="list-row__desc">Dinge, bei denen das Herz schneller schlägt.</p>
+          </span>
+          <span class="list-row__count">2/7</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-amber" href="list.html" style="--p: 60%">
+          <span class="list-row__icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Essen &amp; Trinken</p>
+            <p class="list-row__desc">Restaurants, Kochkurse und Gerichte, die wir probieren wollen.</p>
+          </span>
+          <span class="list-row__count">9/15</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-mint list-row--complete" href="list.html" style="--p: 100%">
+          <span class="list-row__icon"><i class="fa-solid fa-person-hiking" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Wanderungen</p>
+            <p class="list-row__desc">Gipfel und Fernwanderwege in den Alpen.</p>
+          </span>
+          <span class="list-row__count">5/5</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-violet" href="list.html" style="--p: 17%">
+          <span class="list-row__icon"><i class="fa-solid fa-music" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Konzerte</p>
+            <p class="list-row__desc">Bands und Festivals, die wir live erleben wollen.</p>
+          </span>
+          <span class="list-row__count">1/6</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-pink" href="list.html" style="--p: 22%">
+          <span class="list-row__icon"><i class="fa-solid fa-heart" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Date-Ideen</p>
+            <p class="list-row__desc">Für die Abende, an denen uns nichts einfällt.</p>
+          </span>
+          <span class="list-row__count">2/9</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a class="list-row c-lime" href="list.html" style="--p: 0%">
+          <span class="list-row__icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i></span>
+          <span class="list-row__body">
+            <p class="list-row__title">Lernen</p>
+            <p class="list-row__desc">Neue Fähigkeiten: Sprachen, Instrumente, Handwerk.</p>
+          </span>
+          <span class="list-row__count">0/4</span>
+          <i class="fa-solid fa-chevron-right list-row__chevron" aria-hidden="true"></i>
+          <span class="list-row__progress" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <button class="list-row list-row--add"><i class="fa-solid fa-plus" aria-hidden="true"></i> Neue Liste</button>
+      </li>
+    </ul>
+
+    <div class="section-head">
+      <h2>Zuletzt passiert</h2>
+    </div>
+    <ul class="activity">
+      <li>
+        <span class="avatar avatar--e">E</span>
+        <p><b>Eva</b> hat <span class="tag-done">„Polarlichter sehen“</span> abgehakt</p>
+        <time>vor 2 Std.</time>
+      </li>
+      <li>
+        <span class="avatar avatar--t">T</span>
+        <p><b>Tobias</b> hat <span class="tag-new">„Sushi-Kurs“</span> zu Essen &amp; Trinken hinzugefügt</p>
+        <time>gestern</time>
+      </li>
+      <li>
+        <span class="avatar avatar--e">E</span>
+        <p><b>Eva</b> hat die Liste <span class="tag-new">„Date-Ideen“</span> erstellt</p>
+        <time>Mo.</time>
+      </li>
+    </ul>
+  </main>
+</body>
+</html>

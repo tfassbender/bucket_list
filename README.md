@@ -22,3 +22,4 @@ space, where all members see and edit the same lists. It works on desktop and is
 - [doc/sync.md](doc/sync.md): refreshing data and avoiding lost updates
 - [doc/design.md](doc/design.md): domain model, screens, API sketch
 - [doc/ideas.md](doc/ideas.md): feature ideas
+- [mockup/](mockup/): HTML/CSS mockups

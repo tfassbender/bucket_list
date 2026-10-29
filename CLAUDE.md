@@ -26,6 +26,12 @@ changes. Each decision is marked **Decided**, **Proposed** or **Open**.
 - `doc/ideas.md`: loose feature ideas (item/list details, reordering, images, …). These are **not
   requirements yet**; don't implement them until they've been refined into `design.md`.
 
+`mockup/` (in the project root) holds static HTML/CSS mockups (`home.html`, `list.html`, `item.html`),
+each a self-contained file with inline CSS and no JavaScript. Dark theme with bright accent colors;
+German UI text. Read-only and edit mode are switched by a hidden checkbox (`#edit-mode`), and the
+image lightbox uses `:target`, and the space switcher is a `<details>` element; these are mockup
+tricks, not the real implementation. Sample people: Tobias and his partner Eva.
+
 Don't hard-code anything marked **Open**, and don't silently turn **Proposed** into **Decided**. Ask
 first, then update the doc.
 

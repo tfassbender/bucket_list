@@ -44,11 +44,32 @@ Ideas for later (images, comments, activity feed, …) are listed in [ideas.md](
 ## Screens (first version)
 
 1. **Login / register** (plus verify email and reset password).
-2. **Home**: the user's spaces (personal first), each with its lists and a progress count (done/total).
-3. **List view**: the items in a list, with an open/done toggle, quick-add at the top, reordering
-   (drag and drop that also works on touch), a tag filter and show/hide done items. Tapping an item opens its details for editing.
-4. **Space settings**: rename the space, see members, create an invite link, leave the space.
-5. **Account**: display name, change password, log out.
+2. **Home** (mockup `mockup/home.html`): shows one space at a time.
+   - **Space switcher**: a button showing the current space (name + member avatars). It opens a list
+     of all the user's spaces, each with member and list count, plus "create space", "invite members"
+     and "space settings". On phones it opens as a bottom sheet, on desktop as a dropdown. This scales
+     to any number of spaces.
+   - Progress across the current space ("21 of 53 done") with a progress bar.
+   - **Lists as full-width rows**: the list's icon and color, title, a one-line description (cut off
+     with an ellipsis), the done/total count and a thin progress line along the bottom edge. A dashed
+     "new list" row at the end.
+   - **Recent activity** in this space: who added, checked off or created what.
+3. **List view** (mockup `mockup/list.html`): a compact list of items showing only the status, title,
+   tags and the first image (if any). It has a tag filter and a collapsible "done" section. Tapping an
+   item opens the item page.
+   - **Read-only is the default.** Nothing can be changed: no adding, checking off, reordering or deleting.
+   - **Edit mode** (pen button, closed with "Fertig"): quick-add, check off, drag-and-drop reordering
+     (also on touch), delete, and editing the list's name, description, icon and color.
+4. **Item page** (mockup `mockup/item.html`): all details of one item: the first image large, title,
+   status, tags, notes, target date, location, link, who added or changed it, and a gallery of all
+   images, which enlarge when clicked. Read-only by default too; edit mode turns the fields into
+   inputs and allows checking off, adding or removing images, and deleting the item.
+5. **Space settings**: rename the space, see members, create an invite link, leave the space.
+6. **Account**: display name, change password, log out.
+
+**List icons and colors:** every list has an icon and a color. The icon is picked from a fixed set of
+about 30 Font Awesome Free icons (travel, nature, food, music, learning, …; see the picker in
+`mockup/list.html`). The color is one of the seven accent colors.
 
 ## UX principles
 

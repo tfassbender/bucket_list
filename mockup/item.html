@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mockup – Eintrag</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* ---- Design tokens ---------------------------------------------------- */
+    :root {
+      --bg: #0f1020;
+      --bg-elevated: #181a2e;
+      --bg-elevated-2: #212440;
+      --border: #2c3054;
+      --text: #f2f3ff;
+      --text-muted: #9a9cc4;
+      --text-faint: #6b6e99;
+
+      --c-coral: #ff6b6b;
+      --c-amber: #ffc94d;
+      --c-mint: #3ee0b0;
+      --c-sky: #4cc9f0;
+      --c-violet: #a78bfa;
+      --c-pink: #f472b6;
+      --c-lime: #a3e635;
+
+      /* colour of the list the item belongs to */
+      --list: var(--c-sky);
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+
+      --font-xs: 0.75rem;
+      --font-sm: 0.8125rem;
+      --font-md: 0.9375rem;
+      --font-lg: 1.125rem;
+      --font-xl: 1.625rem;
+    }
+
+    /* ---- Base ------------------------------------------------------------- */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(700px 320px at 50% -12%, color-mix(in srgb, var(--list) 22%, transparent), transparent),
+        var(--bg);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: var(--font-md);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    button, input, textarea { font: inherit; color: inherit; }
+    button, label { cursor: pointer; }
+    a { color: var(--list); }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-4) var(--space-6);
+    }
+
+    /* ---- Read-only / edit mode (CSS-only toggle for the mockup) ------------ */
+    .mode-toggle:not(:checked) ~ .page .edit-only { display: none !important; }
+    .mode-toggle:checked ~ .page .read-only { display: none !important; }
+
+    .edit-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--c-amber) 14%, transparent);
+      color: var(--c-amber);
+      font-size: var(--font-sm);
+      font-weight: 600;
+    }
+
+    /* ---- Top bar ---------------------------------------------------------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      height: 40px;
+      padding: 0 var(--space-4) 0 var(--space-3);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back .dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--list);
+      color: var(--bg);
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+    }
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      display: grid;
+      place-items: center;
+      color: var(--text);
+    }
+    .done-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      height: 40px;
+      padding: 0 var(--space-4);
+      border-radius: var(--radius-pill);
+      background: var(--c-amber);
+      color: var(--bg);
+      font-weight: 700;
+    }
+
+    /* ---- Hero image ------------------------------------------------------- */
+    .hero {
+      display: block;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    .hero__count {
+      position: absolute;
+      right: var(--space-2);
+      bottom: var(--space-2);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-pill);
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: var(--font-xs);
+    }
+
+    /* ---- Title & status --------------------------------------------------- */
+    h1 { margin: 0 0 var(--space-2); font-size: var(--font-xl); line-height: 1.2; }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px var(--space-3);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: var(--font-sm);
+      font-weight: 600;
+    }
+    .tag {
+      --c: var(--c-violet);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-pill);
+      background: color-mix(in srgb, var(--c) 16%, transparent);
+      color: var(--c);
+      font-size: var(--font-xs);
+      font-weight: 600;
+    }
+    .tag--amber { --c: var(--c-amber); }
+    .tag--mint { --c: var(--c-mint); }
+
+    /* ---- Sections --------------------------------------------------------- */
+    .section { margin-top: var(--space-5); }
+    .section h2 {
+      margin: 0 0 var(--space-2);
+      font-size: var(--font-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .notes p { margin: 0 0 var(--space-2); }
+
+    .facts {
+      margin: 0;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .fact {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+    }
+    .fact + .fact { border-top: 1px solid var(--border); }
+    .fact dt {
+      flex: none;
+      width: 24px;
+      color: var(--text-faint);
+      text-align: center;
+    }
+    .fact dd { margin: 0; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .fact dd small { display: block; color: var(--text-faint); font-size: var(--font-xs); }
+
+    /* ---- Gallery ---------------------------------------------------------- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-2);
+    }
+    .thumb {
+      position: relative;
+      display: block;
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .thumb__remove {
+      position: absolute;
+      top: var(--space-1);
+      right: var(--space-1);
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 0.75rem;
+    }
+    .thumb--add {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: var(--space-1);
+      border: 1.5px dashed var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: var(--font-xs);
+      text-align: center;
+    }
+    .thumb--add i { font-size: 1.25rem; }
+
+    /* placeholder "photos" */
+    .img-aurora {
+      background:
+        radial-gradient(120% 60% at 30% 20%, #3ee0b0aa, transparent 60%),
+        radial-gradient(90% 50% at 80% 35%, #a78bfa99, transparent 60%),
+        linear-gradient(180deg, #0b1630, #0d2240 70%, #0a0f1f 71%);
+    }
+    .img-road {
+      background:
+        linear-gradient(100deg, transparent 46%, #e8e2c8 47% 48%, transparent 49%),
+        linear-gradient(180deg, #8ecae6 0%, #bde0fe 45%, #6a994e 46%, #386641 100%);
+    }
+    .img-glacier {
+      background:
+        linear-gradient(160deg, transparent 55%, #e0fbfc 56% 70%, transparent 71%),
+        linear-gradient(200deg, transparent 50%, #c2dfe3 51% 68%, transparent 69%),
+        linear-gradient(180deg, #5c7aa0 0%, #9db4c0 50%, #253237 100%);
+    }
+    .img-falls {
+      background:
+        linear-gradient(90deg, transparent 44%, #f1faee 45% 52%, transparent 53%),
+        linear-gradient(180deg, #a8dadc 0%, #457b9d 30%, #2b6a4a 31%, #1d3c2a 100%);
+    }
+
+    /* ---- Lightbox (CSS-only via :target) ---------------------------------- */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: rgba(5, 6, 15, 0.94);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+    .lightbox:target { display: flex; }
+    .lightbox__image {
+      width: min(100%, 960px);
+      aspect-ratio: 4 / 3;
+      max-height: 75vh;
+      border-radius: var(--radius-sm);
+    }
+    .lightbox__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100%, 960px);
+      color: var(--text-muted);
+      font-size: var(--font-sm);
+    }
+    .lightbox__close {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+    }
+    .lightbox__nav { display: flex; gap: var(--space-2); }
+    .lightbox a.icon-button { text-decoration: none; }
+
+    /* ---- Edit form -------------------------------------------------------- */
+    .field { display: flex; flex-direction: column; gap: var(--space-1); }
+    .field + .field { margin-top: var(--space-4); }
+    .field__label {
+      font-size: var(--font-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .input {
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: 0;
+    }
+    .input:focus { border-color: var(--list); }
+    textarea.input { resize: vertical; min-height: 120px; }
+    .input--title { font-size: var(--font-lg); font-weight: 700; }
+    .tag-editor {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .tag-editor .tag i { margin-left: var(--space-1); opacity: 0.7; }
+    .tag-editor input {
+      flex: 1;
+      min-width: 100px;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-size: var(--font-sm);
+    }
+    .toggle-done {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--c-mint);
+      background: color-mix(in srgb, var(--c-mint) 12%, transparent);
+      color: var(--c-mint);
+      font-weight: 700;
+    }
+    .danger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      margin-top: var(--space-6);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1px solid color-mix(in srgb, var(--c-coral) 50%, transparent);
+      background: transparent;
+      color: var(--c-coral);
+      font-weight: 600;
+    }
+    .two-col { display: grid; gap: var(--space-4); }
+    .two-col .field + .field { margin-top: 0; }
+
+    /* ---- Desktop ---------------------------------------------------------- */
+    @media (min-width: 768px) {
+      .page { padding-top: var(--space-6); }
+      h1 { font-size: 2rem; }
+      .gallery { grid-template-columns: repeat(4, 1fr); }
+      .two-col { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mockup only: this hidden checkbox switches between read-only (default) and edit mode. -->
+  <input type="checkbox" id="edit-mode" class="mode-toggle" hidden>
+
+  <main class="page">
+    <header class="topbar">
+      <a class="back" href="list.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> <span class="dot"><i class="fa-solid fa-plane" aria-hidden="true"></i></span> Reisen</a>
+      <label class="icon-button read-only" for="edit-mode" aria-label="Bearbeiten"><i class="fa-solid fa-pen" aria-hidden="true"></i></label>
+      <label class="done-button edit-only" for="edit-mode"><i class="fa-solid fa-check" aria-hidden="true"></i> Fertig</label>
+    </header>
+
+    <div class="edit-banner edit-only">
+      <i class="fa-solid fa-pen" aria-hidden="true"></i> Bearbeitungsmodus
+    </div>
+
+    <!-- ===================== read-only view ===================== -->
+    <div class="read-only">
+      <a class="hero img-aurora" href="#img-1" aria-label="Bild vergrößern">
+        <span class="hero__count"><i class="fa-regular fa-image" aria-hidden="true"></i> 4</span>
+      </a>
+
+      <h1>Island mit dem Camper umrunden</h1>
+      <div class="status-row">
+        <span class="status"><i class="fa-regular fa-circle" aria-hidden="true"></i> Offen</span>
+        <span class="tag">Fernreise</span>
+        <span class="tag tag--mint">Natur</span>
+      </div>
+
+      <section class="section notes">
+        <h2>Notizen</h2>
+        <p>Einmal die komplette Ringstraße fahren, ca. 2 Wochen. Am besten im September – dann sind weniger Leute unterwegs und man hat schon Chancen auf Polarlichter.</p>
+        <p>Unbedingt: Jökulsárlón, Skógafoss, die Westfjorde (Abstecher!) und eine Nacht in einem Hot Pot.</p>
+      </section>
+
+      <section class="section">
+        <h2>Details</h2>
+        <dl class="facts">
+          <div class="fact">
+            <dt><i class="fa-regular fa-calendar" aria-hidden="true"></i></dt>
+            <dd>September 2027 <small>Wunschtermin</small></dd>
+          </div>
+          <div class="fact">
+            <dt><i class="fa-solid fa-location-dot" aria-hidden="true"></i></dt>
+            <dd>Island, Ringstraße (Route 1)</dd>
+          </div>
+          <div class="fact">
+            <dt><i class="fa-solid fa-link" aria-hidden="true"></i></dt>
+            <dd><a href="#">camper-island.example/ringstrasse</a></dd>
+          </div>
+          <div class="fact">
+            <dt><i class="fa-regular fa-user" aria-hidden="true"></i></dt>
+            <dd>Hinzugefügt von Tobias <small>12. März 2026 · zuletzt geändert von Eva, gestern</small></dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="section">
+        <h2>Bilder (4)</h2>
+        <div class="gallery">
+          <a class="thumb img-aurora" href="#img-1" aria-label="Bild 1 vergrößern"></a>
+          <a class="thumb img-road" href="#img-2" aria-label="Bild 2 vergrößern"></a>
+          <a class="thumb img-glacier" href="#img-3" aria-label="Bild 3 vergrößern"></a>
+          <a class="thumb img-falls" href="#img-4" aria-label="Bild 4 vergrößern"></a>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===================== edit view ===================== -->
+    <div class="edit-only">
+      <button class="toggle-done"><i class="fa-solid fa-check" aria-hidden="true"></i> Als erledigt abhaken</button>
+
+      <section class="section">
+        <div class="field">
+          <span class="field__label">Titel</span>
+          <input class="input input--title" value="Island mit dem Camper umrunden">
+        </div>
+        <div class="field">
+          <span class="field__label">Tags</span>
+          <div class="tag-editor">
+            <span class="tag">Fernreise <i class="fa-solid fa-xmark" aria-label="entfernen"></i></span>
+            <span class="tag tag--mint">Natur <i class="fa-solid fa-xmark" aria-label="entfernen"></i></span>
+            <input placeholder="Tag hinzufügen …" aria-label="Tag hinzufügen">
+          </div>
+        </div>
+        <div class="field">
+          <span class="field__label">Notizen</span>
+          <textarea class="input">Einmal die komplette Ringstraße fahren, ca. 2 Wochen. Am besten im September – dann sind weniger Leute unterwegs und man hat schon Chancen auf Polarlichter.
+
+Unbedingt: Jökulsárlón, Skógafoss, die Westfjorde (Abstecher!) und eine Nacht in einem Hot Pot.</textarea>
+        </div>
+      </section>
+
+      <section class="section two-col">
+        <div class="field">
+          <span class="field__label">Wunschtermin</span>
+          <input class="input" type="month" value="2027-09">
+        </div>
+        <div class="field">
+          <span class="field__label">Ort</span>
+          <input class="input" value="Island, Ringstraße (Route 1)">
+        </div>
+      </section>
+      <section class="section">
+        <div class="field">
+          <span class="field__label">Link</span>
+          <input class="input" type="url" value="https://camper-island.example/ringstrasse">
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Bilder (4)</h2>
+        <div class="gallery">
+          <div class="thumb img-aurora"><button class="thumb__remove" aria-label="Bild entfernen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+          <div class="thumb img-road"><button class="thumb__remove" aria-label="Bild entfernen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+          <div class="thumb img-glacier"><button class="thumb__remove" aria-label="Bild entfernen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+          <div class="thumb img-falls"><button class="thumb__remove" aria-label="Bild entfernen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+          <button class="thumb thumb--add"><i class="fa-solid fa-camera" aria-hidden="true"></i> Bild hinzufügen</button>
+        </div>
+      </section>
+
+      <button class="danger"><i class="fa-regular fa-trash-can" aria-hidden="true"></i> Eintrag löschen</button>
+    </div>
+  </main>
+
+  <!-- ===================== lightbox ===================== -->
+  <div class="lightbox" id="img-1">
+    <a class="icon-button lightbox__close" href="#" aria-label="Schließen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+    <div class="lightbox__image img-aurora" role="img" aria-label="Bild 1"></div>
+    <div class="lightbox__bar">
+      <span>1 / 4 · von Eva</span>
+      <span class="lightbox__nav">
+        <a class="icon-button" href="#img-4" aria-label="Vorheriges Bild"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+        <a class="icon-button" href="#img-2" aria-label="Nächstes Bild"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+      </span>
+    </div>
+  </div>
+  <div class="lightbox" id="img-2">
+    <a class="icon-button lightbox__close" href="#" aria-label="Schließen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+    <div class="lightbox__image img-road" role="img" aria-label="Bild 2"></div>
+    <div class="lightbox__bar">
+      <span>2 / 4 · von Tobias</span>
+      <span class="lightbox__nav">
+        <a class="icon-button" href="#img-1" aria-label="Vorheriges Bild"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+        <a class="icon-button" href="#img-3" aria-label="Nächstes Bild"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+      </span>
+    </div>
+  </div>
+  <div class="lightbox" id="img-3">
+    <a class="icon-button lightbox__close" href="#" aria-label="Schließen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+    <div class="lightbox__image img-glacier" role="img" aria-label="Bild 3"></div>
+    <div class="lightbox__bar">
+      <span>3 / 4 · von Tobias</span>
+      <span class="lightbox__nav">
+        <a class="icon-button" href="#img-2" aria-label="Vorheriges Bild"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+        <a class="icon-button" href="#img-4" aria-label="Nächstes Bild"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+      </span>
+    </div>
+  </div>
+  <div class="lightbox" id="img-4">
+    <a class="icon-button lightbox__close" href="#" aria-label="Schließen"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+    <div class="lightbox__image img-falls" role="img" aria-label="Bild 4"></div>
+    <div class="lightbox__bar">
+      <span>4 / 4 · von Eva</span>
+      <span class="lightbox__nav">
+        <a class="icon-button" href="#img-3" aria-label="Vorheriges Bild"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+        <a class="icon-button" href="#img-1" aria-label="Nächstes Bild"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+      </span>
+    </div>
+  </div>
+</body>
+</html>

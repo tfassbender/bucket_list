@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mockup – Liste</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* ---- Design tokens ---------------------------------------------------- */
+    :root {
+      --bg: #0f1020;
+      --bg-elevated: #181a2e;
+      --bg-elevated-2: #212440;
+      --border: #2c3054;
+      --text: #f2f3ff;
+      --text-muted: #9a9cc4;
+      --text-faint: #6b6e99;
+
+      --c-coral: #ff6b6b;
+      --c-amber: #ffc94d;
+      --c-mint: #3ee0b0;
+      --c-sky: #4cc9f0;
+      --c-violet: #a78bfa;
+      --c-pink: #f472b6;
+      --c-lime: #a3e635;
+
+      /* colour of the list that is shown */
+      --list: var(--c-sky);
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+
+      --font-xs: 0.75rem;
+      --font-sm: 0.8125rem;
+      --font-md: 0.9375rem;
+      --font-lg: 1.125rem;
+      --font-xl: 1.625rem;
+    }
+
+    /* ---- Base ------------------------------------------------------------- */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(700px 320px at 50% -12%, color-mix(in srgb, var(--list) 26%, transparent), transparent),
+        var(--bg);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: var(--font-md);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    button, input, textarea { font: inherit; color: inherit; }
+    button, label { cursor: pointer; }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-4) var(--space-6);
+    }
+
+    /* ---- Read-only / edit mode (CSS-only toggle for the mockup) ------------ */
+    .mode-toggle:not(:checked) ~ .page .edit-only { display: none !important; }
+    .mode-toggle:checked ~ .page .read-only { display: none !important; }
+
+    .edit-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--c-amber) 14%, transparent);
+      color: var(--c-amber);
+      font-size: var(--font-sm);
+      font-weight: 600;
+    }
+
+    /* ---- Top bar ---------------------------------------------------------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .topbar__actions { display: flex; gap: var(--space-2); }
+    .done-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      height: 40px;
+      padding: 0 var(--space-4);
+      border-radius: var(--radius-pill);
+      background: var(--c-amber);
+      color: var(--bg);
+      font-weight: 700;
+    }
+
+    /* ---- List header ------------------------------------------------------ */
+    .list-head {
+      display: flex;
+      gap: var(--space-4);
+      align-items: flex-start;
+    }
+    .list-icon {
+      flex: none;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: var(--list);
+      color: var(--bg);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--list) 35%, transparent);
+    }
+    .list-head h1 { margin: 0; font-size: var(--font-xl); line-height: 1.2; }
+    .list-head p { margin: var(--space-1) 0 0; color: var(--text-muted); }
+    .space-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      font-size: var(--font-xs);
+      color: var(--text-muted);
+    }
+
+    /* ---- List settings (edit mode) ---------------------------------------- */
+    .panel {
+      padding: var(--space-4);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .field { display: flex; flex-direction: column; gap: var(--space-1); }
+    .field__label {
+      font-size: var(--font-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .input {
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: 0;
+    }
+    .input:focus { border-color: var(--list); }
+    textarea.input { resize: vertical; min-height: 64px; }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+      gap: var(--space-2);
+    }
+    .icon-choice {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+    }
+    .icon-choice:hover { color: var(--text); border-color: var(--text-faint); }
+    .icon-choice.is-selected {
+      background: var(--list);
+      border-color: var(--list);
+      color: var(--bg);
+    }
+    .swatches { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 3px solid var(--bg-elevated);
+      background: var(--c);
+      box-shadow: 0 0 0 1px var(--border);
+    }
+    .swatch.is-selected { box-shadow: 0 0 0 2px var(--text); }
+
+    /* ---- Progress --------------------------------------------------------- */
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: var(--space-5) 0;
+    }
+    .progress__bar {
+      flex: 1;
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-elevated-2);
+      overflow: hidden;
+    }
+    .progress__bar span {
+      display: block;
+      height: 100%;
+      width: 29%;
+      border-radius: inherit;
+      background: var(--list);
+    }
+    .progress__label { font-size: var(--font-sm); color: var(--text-muted); white-space: nowrap; }
+    .progress__label b { color: var(--list); }
+
+    /* ---- Quick add (edit mode) -------------------------------------------- */
+    .quick-add {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      margin-bottom: var(--space-4);
+    }
+    .quick-add:focus-within { border-color: var(--list); }
+    .quick-add input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: 0;
+      outline: 0;
+    }
+    .quick-add input::placeholder { color: var(--text-faint); }
+    .quick-add button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--list);
+      color: var(--bg);
+    }
+
+    /* ---- Filters ---------------------------------------------------------- */
+    .filters {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      padding-bottom: var(--space-1);
+      margin-bottom: var(--space-4);
+      scrollbar-width: none;
+    }
+    .filter {
+      flex: none;
+      padding: 6px var(--space-3);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: var(--font-sm);
+      font-weight: 600;
+    }
+    .filter.is-active {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--bg);
+    }
+
+    /* ---- Items ------------------------------------------------------------ */
+    .items {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      text-decoration: none;
+    }
+    a.item:hover { border-color: var(--text-faint); }
+    .item__handle {
+      flex: none;
+      color: var(--text-faint);
+      padding: var(--space-1);
+      cursor: grab;
+    }
+    /* status circle: shows the state in read-only mode, toggles it in edit mode */
+    .check {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--text-faint);
+      display: grid;
+      place-items: center;
+      color: transparent;
+      font-size: 0.8rem;
+    }
+    .mode-toggle:checked ~ .page .check { cursor: pointer; border-color: var(--text-muted); }
+    .item__body { flex: 1; min-width: 0; }
+    .item__title { font-weight: 600; margin: 0; }
+    .item__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+    }
+    .tag {
+      --c: var(--c-violet);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-pill);
+      background: color-mix(in srgb, var(--c) 16%, transparent);
+      color: var(--c);
+      font-size: var(--font-xs);
+      font-weight: 600;
+    }
+    .tag--amber { --c: var(--c-amber); }
+    .tag--mint { --c: var(--c-mint); }
+    .item__thumb {
+      flex: none;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-sm);
+    }
+    .item__chevron { flex: none; color: var(--text-faint); font-size: var(--font-sm); }
+    .item__delete {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--c-coral);
+    }
+    .item__delete:hover { background: color-mix(in srgb, var(--c-coral) 14%, transparent); }
+
+    /* placeholder "photos" */
+    .img-aurora {
+      background:
+        radial-gradient(120% 60% at 30% 20%, #3ee0b0aa, transparent 60%),
+        radial-gradient(90% 50% at 80% 35%, #a78bfa99, transparent 60%),
+        linear-gradient(180deg, #0b1630, #0d2240 70%, #0a0f1f 71%);
+    }
+    .img-coast {
+      background:
+        radial-gradient(circle at 70% 30%, #ffe08a 0 10%, transparent 11%),
+        linear-gradient(180deg, #1b3a6b 0%, #3b6fb6 55%, #2a9d8f 56%, #1d6b62 100%);
+    }
+
+    /* drag-in-progress state (shown on one item for the mockup) */
+    .mode-toggle:checked ~ .page .item.is-dragging {
+      border-color: var(--list);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--list);
+      transform: rotate(-1deg) scale(1.01);
+    }
+    .mode-toggle:checked ~ .page .item.is-dragging .item__handle { color: var(--list); }
+
+    /* ---- Done section ----------------------------------------------------- */
+    .done-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      width: 100%;
+      margin: var(--space-5) 0 var(--space-3);
+      padding: 0;
+      background: none;
+      border: 0;
+      color: var(--text-muted);
+      font-size: var(--font-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .done-toggle::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .item--done { background: transparent; }
+    .item--done .item__title { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-faint); }
+    .item--done .check,
+    .mode-toggle:checked ~ .page .item--done .check {
+      background: var(--c-mint);
+      border-color: var(--c-mint);
+      color: var(--bg);
+    }
+
+    /* ---- Desktop ---------------------------------------------------------- */
+    @media (min-width: 768px) {
+      .page { padding-top: var(--space-6); }
+      .list-head h1 { font-size: 2rem; }
+      .item { padding: var(--space-3) var(--space-4); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mockup only: this hidden checkbox switches between read-only (default) and edit mode. -->
+  <input type="checkbox" id="edit-mode" class="mode-toggle" hidden>
+
+  <main class="page">
+    <header class="topbar">
+      <a class="icon-button" href="home.html" aria-label="Zurück"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+      <div class="topbar__actions">
+        <label class="icon-button read-only" for="edit-mode" aria-label="Bearbeiten"><i class="fa-solid fa-pen" aria-hidden="true"></i></label>
+        <label class="done-button edit-only" for="edit-mode"><i class="fa-solid fa-check" aria-hidden="true"></i> Fertig</label>
+      </div>
+    </header>
+
+    <div class="edit-banner edit-only">
+      <i class="fa-solid fa-pen" aria-hidden="true"></i> Bearbeitungsmodus – Einträge hinzufügen, sortieren, abhaken oder löschen
+    </div>
+
+    <!-- read-only header -->
+    <section class="list-head read-only">
+      <div class="list-icon"><i class="fa-solid fa-plane" aria-hidden="true"></i></div>
+      <div>
+        <h1>Reisen</h1>
+        <p>Orte, die wir unbedingt zusammen sehen wollen – am liebsten einen pro Jahr.</p>
+        <span class="space-badge"><i class="fa-solid fa-user-group" aria-hidden="true"></i> Wir zwei</span>
+      </div>
+    </section>
+
+    <!-- edit mode: list settings -->
+    <section class="panel edit-only">
+      <div class="field">
+        <span class="field__label">Name</span>
+        <input class="input" value="Reisen">
+      </div>
+      <div class="field">
+        <span class="field__label">Beschreibung</span>
+        <textarea class="input">Orte, die wir unbedingt zusammen sehen wollen – am liebsten einen pro Jahr.</textarea>
+      </div>
+      <div class="field">
+        <span class="field__label">Symbol</span>
+        <div class="icon-grid">
+          <button class="icon-choice is-selected" aria-label="Flugzeug"><i class="fa-solid fa-plane" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Berge"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Strand"><i class="fa-solid fa-umbrella-beach" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Welt"><i class="fa-solid fa-earth-europe" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Wandern"><i class="fa-solid fa-person-hiking" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Zelt"><i class="fa-solid fa-tent" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Auto"><i class="fa-solid fa-car" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Fahrrad"><i class="fa-solid fa-bicycle" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Schiff"><i class="fa-solid fa-ship" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Stadt"><i class="fa-solid fa-city" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Sehenswürdigkeit"><i class="fa-solid fa-landmark" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Abenteuer"><i class="fa-solid fa-bolt" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Essen"><i class="fa-solid fa-utensils" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Wein"><i class="fa-solid fa-wine-glass" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Kaffee"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Musik"><i class="fa-solid fa-music" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Gitarre"><i class="fa-solid fa-guitar" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Film"><i class="fa-solid fa-film" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Buch"><i class="fa-solid fa-book" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Lernen"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Kunst"><i class="fa-solid fa-palette" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Kamera"><i class="fa-solid fa-camera" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Sport"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Spiele"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Herz"><i class="fa-solid fa-heart" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Geschenk"><i class="fa-solid fa-gift" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Stern"><i class="fa-solid fa-star" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Pflanze"><i class="fa-solid fa-seedling" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Tiere"><i class="fa-solid fa-paw" aria-hidden="true"></i></button>
+          <button class="icon-choice" aria-label="Zuhause"><i class="fa-solid fa-house" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field__label">Farbe</span>
+        <div class="swatches">
+          <button class="swatch is-selected" style="--c: var(--c-sky)" aria-label="Himmelblau"></button>
+          <button class="swatch" style="--c: var(--c-coral)" aria-label="Koralle"></button>
+          <button class="swatch" style="--c: var(--c-amber)" aria-label="Bernstein"></button>
+          <button class="swatch" style="--c: var(--c-mint)" aria-label="Mint"></button>
+          <button class="swatch" style="--c: var(--c-violet)" aria-label="Violett"></button>
+          <button class="swatch" style="--c: var(--c-pink)" aria-label="Pink"></button>
+          <button class="swatch" style="--c: var(--c-lime)" aria-label="Limette"></button>
+        </div>
+      </div>
+    </section>
+
+    <div class="progress">
+      <div class="progress__bar" aria-hidden="true"><span></span></div>
+      <span class="progress__label"><b>2</b> von 7 erledigt</span>
+    </div>
+
+    <form class="quick-add edit-only" onsubmit="return false">
+      <input type="text" placeholder="Neues Ziel hinzufügen …" aria-label="Neues Ziel">
+      <button type="submit" aria-label="Hinzufügen"><i class="fa-solid fa-plus" aria-hidden="true"></i></button>
+    </form>
+
+    <div class="filters">
+      <button class="filter is-active">Offen (5)</button>
+      <button class="filter">Alle (7)</button>
+      <button class="filter">#Europa</button>
+      <button class="filter">#Fernreise</button>
+      <button class="filter">#Wochenende</button>
+    </div>
+
+    <ul class="items">
+      <li>
+        <a class="item" href="item.html">
+          <span class="item__handle edit-only" aria-hidden="true"><i class="fa-solid fa-grip-vertical"></i></span>
+          <span class="check" role="img" aria-label="Offen"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Island mit dem Camper umrunden</p>
+            <div class="item__tags"><span class="tag">Fernreise</span></div>
+          </div>
+          <div class="item__thumb img-aurora read-only" role="img" aria-label="Bild"></div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+      <li>
+        <a class="item is-dragging" href="item.html">
+          <span class="item__handle edit-only" aria-hidden="true"><i class="fa-solid fa-grip-vertical"></i></span>
+          <span class="check" role="img" aria-label="Offen"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Lissabon im Frühling</p>
+            <div class="item__tags"><span class="tag tag--amber">Europa</span><span class="tag tag--mint">Wochenende</span></div>
+          </div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+      <li>
+        <a class="item" href="item.html">
+          <span class="item__handle edit-only" aria-hidden="true"><i class="fa-solid fa-grip-vertical"></i></span>
+          <span class="check" role="img" aria-label="Offen"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Mit dem Zug durch Japan</p>
+            <div class="item__tags"><span class="tag">Fernreise</span></div>
+          </div>
+          <div class="item__thumb img-coast read-only" role="img" aria-label="Bild"></div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+      <li>
+        <a class="item" href="item.html">
+          <span class="item__handle edit-only" aria-hidden="true"><i class="fa-solid fa-grip-vertical"></i></span>
+          <span class="check" role="img" aria-label="Offen"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Dolomiten – Hüttentour</p>
+            <div class="item__tags"><span class="tag tag--amber">Europa</span></div>
+          </div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+      <li>
+        <a class="item" href="item.html">
+          <span class="item__handle edit-only" aria-hidden="true"><i class="fa-solid fa-grip-vertical"></i></span>
+          <span class="check" role="img" aria-label="Offen"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Kopenhagen</p>
+            <div class="item__tags"><span class="tag tag--mint">Wochenende</span></div>
+          </div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+    </ul>
+
+    <button class="done-toggle"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i> Erledigt (2)</button>
+
+    <ul class="items">
+      <li>
+        <a class="item item--done" href="item.html">
+          <span class="check" role="img" aria-label="Erledigt"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Polarlichter sehen</p>
+          </div>
+          <div class="item__thumb img-aurora read-only" role="img" aria-label="Bild"></div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+      <li>
+        <a class="item item--done" href="item.html">
+          <span class="check" role="img" aria-label="Erledigt"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <div class="item__body">
+            <p class="item__title">Amsterdam mit dem Fahrrad</p>
+          </div>
+          <i class="fa-solid fa-chevron-right item__chevron read-only" aria-hidden="true"></i>
+          <button class="item__delete edit-only" aria-label="Löschen"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+        </a>
+      </li>
+    </ul>
+  </main>
+</body>
+</html>
